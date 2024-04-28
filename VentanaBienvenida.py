@@ -1,4 +1,4 @@
-# from ConexionDB import create_conn, create_cursor, close_conn
+from conexionDB import create_conn, create_cursor, close_conn
 from PIL import Image, ImageTk
 import tkinter as tk
 
@@ -10,8 +10,8 @@ def abrir_ventana_login():
     root.destroy()
     import login
 
-#conn = create_conn()
-#cursor = create_cursor(conn)
+conn = create_conn()
+cursor = create_cursor(conn)
 
 descripcion = """
 Ofrecemos una solución informática que simplifica el diagnóstico médico, reduciendo errores. 

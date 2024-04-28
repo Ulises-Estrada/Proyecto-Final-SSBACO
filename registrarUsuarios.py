@@ -1,4 +1,4 @@
-from ConexionDB import create_conn, create_cursor
+from conexionDB import create_conn, create_cursor
 from PIL import Image, ImageTk
 import tkinter as tk
 
