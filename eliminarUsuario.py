@@ -37,14 +37,13 @@ root.geometry("1000x300")
 data = tabla()
 tree = ttk.Treeview(root)
 
-tree["columns"]=("idusuarios", "nombre", "apellido", "fecha_nac", "genero","telefono", "correo", "contraseña", "rol")
+tree["columns"]=("idusuarios", "nombre", "apellido", "genero","telefono", "correo", "contraseña", "rol")
 
 # Crea las columnas en el widget
 tree.column("#0", width=0, stretch=tk.NO)
 tree.column("idusuarios", width=100)
 tree.column("nombre", width=100)
 tree.column("apellido", width=100)
-tree.column("fecha_nac", width=100)
 tree.column("genero", width=100)
 tree.column("telefono", width=100)
 tree.column("correo", width=100)
@@ -56,7 +55,6 @@ tree.heading("#0",text="",anchor=tk.W)
 tree.heading("idusuarios", text="ID",anchor=tk.W)
 tree.heading("nombre", text="Nombre",anchor=tk.W)
 tree.heading("apellido", text="Apellido",anchor=tk.W)
-tree.heading("fecha_nac", text="Fecha de Nacimiento",anchor=tk.W)
 tree.heading("genero", text="Genero",anchor=tk.W)
 tree.heading("telefono", text="Teléfono",anchor=tk.W)
 tree.heading("correo", text="Correo",anchor=tk.W)
@@ -67,12 +65,9 @@ tree.heading("rol", text="Rol",anchor=tk.W)
 for row in data:
     tree.insert("", tk.END, values=row)
 
-
 bienvenida = tk.Label(root, text="Eliminación de Usuarios",font=(12,'20')).grid(row=0, column=1, sticky="NSEW",columnspan=2,)
 
 tree.grid(row=1,column=1,columnspan=2)
-
-
 
 id = tk.Label(root, text="ID").grid(row=2, column=0, )
 id_entry = tk.Entry(root)

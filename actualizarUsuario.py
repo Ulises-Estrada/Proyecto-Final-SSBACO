@@ -1,61 +1,157 @@
 from conexionDB import create_conn, create_cursor, psycopg2
 from PIL import Image, ImageTk
 import tkinter as tk
+from tkinter import ttk
 
-def actualizar_usuario():
-  id = id_entry.get()
-  nuevo_nombre = nombre_entry.get()
-  nuevo_apellido = apellido_entry.get()
-  nuevo_telefono = telefono_entry.get()
-  nuevo_correo = correo_entry.get()
-  nueva_contrasena = contrasena_entry.get()
-  try:  
-    conn = create_conn()
-    cursor = create_cursor(conn)
+conn = create_conn()
+cursor = create_cursor(conn)
+def tabla():
+    cursor.execute("SELECT * FROM usuarios")
+    rows = cursor.fetchall()
+    return rows
 
-    # Ejecutar la consulta SQL para actualizar la información del usuario
-    cursor.execute("UPDATE usuarios SET nombre = %s, apellido = %s, telefono = %s, correo = %s, contraseña = %s WHERE idusuarios = %s",(nuevo_nombre, nuevo_apellido, nuevo_telefono, nuevo_correo, nueva_contrasena, id))
-    
-    # Confirmar la actualización de usuario
+def buscar():
+    try:
+        id_usuario = id_entry.get()
+        cursor.execute("SELECT * FROM usuarios WHERE idusuarios = %s", (id_usuario,))
+        row = cursor.fetchone()
+
+        if row:
+            nombre_entry.delete(0, tk.END)
+            nombre_entry.insert(0, row[1])
+
+            apellido_entry.delete(0, tk.END)
+            apellido_entry.insert(0, row[2])
+
+            genero_entry.delete(0, tk.END)
+            genero_entry.insert(0, row[3])
+
+            telefono_entry.delete(0, tk.END)
+            telefono_entry.insert(0, row[4])
+
+            correo_entry.delete(0, tk.END)
+            correo_entry.insert(0, row[5])
+
+            contrasena_entry.delete(0, tk.END)
+            contrasena_entry.insert(0, row[6])
+
+            rol_entry.delete(0, tk.END)
+            rol_entry.insert(0, row[7])
+            actualizar_treeview()
+    except (Exception, psycopg2.DatabaseError) as error:
+        print("Error al buscar al usuario:", error)
+
+def actualizar():
+    id_usuario = id_entry.get()
+    nombre = nombre_entry.get()
+    apellido = apellido_entry.get()
+    genero = genero_entry.get()
+    telefono = telefono_entry.get()
+    correo = correo_entry.get()
+    contrasena = contrasena_entry.get()
+    rol = rol_entry.get()
+
+    cursor.execute("""
+        UPDATE usuarios
+        SET nombre = %s, apellido = %s, genero = %s, telefono = %s, correo = %s, contraseña = %s, rol = %s
+        WHERE idusuarios = %s
+    """, (nombre, apellido, genero, telefono, correo, contrasena, rol, id_usuario))
+
     conn.commit()
-    root.destroy()
-    import Perfil
+    actualizar_treeview()
 
-  except (Exception, psycopg2.DatabaseError) as error: print("Error al actualizar la información del usuario:", error) 
+def actualizar_treeview():
+    for i in tree.get_children():
+        tree.delete(i)
+
+    datos_actualizados = tabla()
+
+    for dato in datos_actualizados:
+        tree.insert('', 'end', values=dato)
+
 
 root = tk.Tk()
-root.title("Actualización")
-root.geometry("300x300")
+root.title("Registro")
+root.geometry("1300x400")
 
-bienvenida = tk.Label(root, text="Actualización de perfil").grid(row = 0, column = 0, sticky="NSEW")
+bienvenida = tk.Label(root, text="Actualizar Usuarios",font=(12,'20')).grid(row=0, column=0, columnspan=4, pady=(20, 10))
 
-info = tk.Label(root, text="Informacion Personal").grid(row = 1, column = 0, sticky="W")
+frame_entrada = tk.Frame(root)
+frame_entrada.grid(row=2, column=0, sticky="nsew",padx=10)
 
-id = tk.Label(root, text="ID").grid(row = 2, column = 0, )
-id_entry = tk.Entry(root)
-id_entry.grid(row = 2, column = 1)
+info = tk.Label(root, text="Informacion de Usuario",font=(12,'15')).grid(row = 1, column = 0, sticky="nsew")
 
-nombre = tk.Label(root, text="Nombre").grid(row = 3, column = 0, )
-nombre_entry = tk.Entry(root)
-nombre_entry.grid(row = 3, column = 1)
+id = tk.Label(frame_entrada, text="ID",font=(15)).grid(row = 2, column = 0,sticky="nsew")
+id_entry = tk.Entry(frame_entrada,width=30,font=(15))
+id_entry.grid(row = 2, column = 1,sticky="W")
 
-apellido = tk.Label(root, text="Apellido").grid(row = 4, column = 0)
-apellido_entry = tk.Entry(root)
+nombre = tk.Label(frame_entrada, text="Nombre",font=(15)).grid(row = 3, column = 0,sticky="nsew")
+nombre_entry = tk.Entry(frame_entrada,width=30,font=(15))
+nombre_entry.grid(row = 3, column = 1,sticky="W")
+
+apellido = tk.Label(frame_entrada, text="Apellido",font=(15)).grid(row = 4, column = 0,sticky="nsew")
+apellido_entry = tk.Entry(frame_entrada,width=30,font=(15))
 apellido_entry.grid(row = 4, column = 1)
 
-telefono = tk.Label(root, text="Teléfono").grid(row = 5, column = 0)
-telefono_entry = tk.Entry(root)
-telefono_entry.grid(row = 5, column = 1)
+genero = tk.Label(frame_entrada, text="Genero",font=(15)).grid(row = 5, column = 0,sticky="nsew")
+genero_entry = tk.Entry(frame_entrada,width=30,font=(15))
+genero_entry.grid(row = 5, column = 1)
 
-correo = tk.Label(root, text="Correo").grid(row = 6, column = 0)
-correo_entry = tk.Entry(root)
-correo_entry.grid(row = 6, column = 1)
+telefono = tk.Label(frame_entrada, text="Teléfono",font=(15)).grid(row = 6, column = 0,sticky="nsew")
+telefono_entry = tk.Entry(frame_entrada,width=30,font=(15))
+telefono_entry.grid(row = 6, column = 1)
 
-contra = tk.Label(root, text="Contraseña").grid(row = 7, column = 0)
-contrasena_entry = tk.Entry(root, show="*")
-contrasena_entry.grid(row = 7, column = 1)
+correo = tk.Label(frame_entrada, text="Correo",font=(15)).grid(row = 7, column = 0,sticky="nsew")
+correo_entry = tk.Entry(frame_entrada,width=30,font=(15))
+correo_entry.grid(row = 7, column = 1)
 
-boton_actualizar = tk.Button(root,text="Guardar cambios").grid(row= 9, column = 0)
+contra = tk.Label(frame_entrada, text="Contraseña",font=(15)).grid(row = 8, column = 0,sticky="nsew")
+contrasena_entry = tk.Entry(frame_entrada, show="*",width=30,font=(15))
+contrasena_entry.grid(row = 8, column = 1)
+
+rol = tk.Label(frame_entrada, text="Rol",font=(15)).grid(row = 9, column = 0,sticky="nsew")
+rol_entry = tk.Entry(frame_entrada,width=30,font=(15))
+rol_entry.grid(row = 9, column = 1)
+
+boton_buscar = tk.Button(frame_entrada,text="Buscar con ID", command=buscar,font=(15)).grid(row=10, column=0,sticky="nsew",pady=(10, 0))
+boton_actualizar = tk.Button(frame_entrada,text="Actualizar", command=actualizar,font=(15)).grid(row=10, column=1,sticky="nsew",pady=(10, 0))
+
+
+frame_tabla = tk.Frame(root)
+frame_tabla.grid(row=2, column=1, sticky="nsew")
+
+data = tabla()
+tree = ttk.Treeview(frame_tabla)
+
+tree["columns"]=("idusuarios", "nombre", "apellido", "genero","telefono", "correo", "contraseña", "rol")
+
+# Crea las columnas en el widget
+tree.column("#0", width=0, stretch=tk.NO)
+tree.column("idusuarios", width=100)
+tree.column("nombre", width=100)
+tree.column("apellido", width=100)
+tree.column("genero", width=100)
+tree.column("telefono", width=100)
+tree.column("correo", width=100)
+tree.column("contraseña", width=100)
+tree.column("rol", width=100)
+
+    # Crea los encabezados de las columnas
+tree.heading("#0",text="",anchor=tk.W)
+tree.heading("idusuarios", text="ID",anchor=tk.W)
+tree.heading("nombre", text="Nombre",anchor=tk.W)
+tree.heading("apellido", text="Apellido",anchor=tk.W)
+tree.heading("genero", text="Genero",anchor=tk.W)
+tree.heading("telefono", text="Teléfono",anchor=tk.W)
+tree.heading("correo", text="Correo",anchor=tk.W)
+tree.heading("contraseña", text="Contraseña",anchor=tk.W)
+tree.heading("rol", text="Rol",anchor=tk.W)
+
+# Añade los registros a la tabla
+for row in data:
+    tree.insert("", tk.END, values=row)
+
+tree.grid(row=1,column=0)
+
 
 root.mainloop()
-
