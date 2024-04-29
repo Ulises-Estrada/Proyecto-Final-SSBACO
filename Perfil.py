@@ -57,15 +57,18 @@ eliminar.grid(row=3,column=1)
 regisrar = tk.Label(info_frame, text="Registrar",font=12)
 regisrar.grid(row=4,column=1)
 
+pacientes = tk.Label(info_frame, text="Pacientes",font=(12,'15'))
+pacientes.grid(row=5,column=1,pady=(20, 0))
 
-"""# Crear botón para cerrar sesión
-boton_cerrar_sesion = tk.Button(root, text="Editar perfil", )
-boton_cerrar_sesion.grid()
+registrar_pacientes = tk.Label(info_frame, text="Registrar",font=12)
+registrar_pacientes.grid(row=6,column=1)
 
+"""
 # Crear botón para cerrar sesión
 boton_cerrar_sesion = tk.Button(root, text="Cerrar sesión",)
 boton_cerrar_sesion.grid()
 """
+
 
 boton_actualizar = tk.Button(info_frame, text=" ↵ ",command=editar_perfil)
 boton_actualizar.grid(row=2,column=2)
