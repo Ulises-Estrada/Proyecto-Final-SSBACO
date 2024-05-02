@@ -3,6 +3,9 @@ from experta import Fact, Rule, KnowledgeEngine
 import psycopg2
 from conexionDB import create_conn, create_cursor, psycopg2
 
+conn = create_conn()
+cursor = create_cursor(conn)
+
 """
 CREATE TABLE enfermedades_sintomas (
     id SERIAL PRIMARY KEY,
@@ -37,8 +40,6 @@ class Diagnostico(KnowledgeEngine):
 
 def obtener_sintomas_desde_bd(sintoma):
     # Aquí conectarías con tu base de datos para obtener los síntomas
-    conn = psycopg2.connect(database="proyectoFinal", user="postgres", password="15255219llo", host="localhost", port="5432")
-    cursor = conn.cursor()
     cursor.execute(f"SELECT enfermedad FROM enfermedades_sintomas WHERE sintoma = '{sintoma}'")
     rows = cursor.fetchall()
     return [row[0] for row in rows]
