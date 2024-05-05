@@ -121,3 +121,49 @@ image_label.grid(row=2, column=2, rowspan=8, columnspan=2, padx=10, pady=10, sti
 boton_registrar = tk.Button(root,text="Registrarse", font=(15),command=registrar_enfermedad).grid(row=10, column=2, columnspan=2, pady=(20, 10))
 
 root.mainloop()
+
+
+"""
+CREATE TABLE enfermedades (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(30),
+	descripcion VARCHAR(100),
+	pruebas_lab VARCHAR(100),
+	tratamientos VARCHAR(100),
+	pruebas_mortem VARCHAR(100))
+	
+ALTER SEQUENCE enfermedades_id_seq RESTART WITH 1;
+
+CREATE TABLE sintomas (
+    id SERIAL PRIMARY KEY,
+    descripcion VARCHAR(255)
+);
+
+ALTER SEQUENCE sintomas_id_seq RESTART WITH 1;
+
+
+CREATE TABLE signos (
+    id SERIAL PRIMARY KEY,
+    descripcion VARCHAR(255)
+);
+
+ALTER SEQUENCE signos_id_seq RESTART WITH 1;
+
+
+CREATE TABLE enfermedades_sintomas (
+    id SERIAL PRIMARY KEY,
+    enfermedad_id INTEGER REFERENCES enfermedades(id),
+    sintoma_id INTEGER REFERENCES sintomas(id)
+);
+
+ALTER SEQUENCE enfermedades_sintomas_id_seq RESTART WITH 1;
+
+
+CREATE TABLE enfermedades_signos (
+    id SERIAL PRIMARY KEY,
+    enfermedad_id INTEGER REFERENCES enfermedades(id),
+    signo_id INTEGER REFERENCES signos(id)
+);
+
+ALTER SEQUENCE enfermedades_signos_id_seq RESTART WITH 1;
+"""
