@@ -7,25 +7,37 @@ conn = create_conn()
 cursor = create_cursor(conn)
 
 """
-CREATE TABLE enfermedades_sintomas (
+CREATE TABLE enfermedades (
     id SERIAL PRIMARY KEY,
-    enfermedad VARCHAR(255),
-    sintoma VARCHAR(255)
+    nombre VARCHAR(30),
+	descripcion VARCHAR(100),
+	pruebas_lab VARCHAR(100),
+	tratamientos VARCHAR(100),
+	pruebas_mortem VARCHAR(100))
+	
+CREATE TABLE sintomas (
+    id SERIAL PRIMARY KEY,
+    descripcion VARCHAR(255)
 );
 
-INSERT INTO enfermedades_sintomas (enfermedad, sintoma) VALUES
-('Gripe', 'Fiebre'),
-('Gripe', 'Tos'),
-('Gripe', 'Dolor de garganta'),
-('Gripe', 'Congestión nasal'),
-('Gripe', 'Dolor muscular'),
-('Gripe', 'Fatiga'),
-('COVID-19', 'Fiebre'),
-('COVID-19', 'Tos seca'),
-('COVID-19', 'Fatiga'),
-('COVID-19', 'Dificultad para respirar'),
-('COVID-19', 'Dolor de garganta'),
-('COVID-19', 'Pérdida del gusto y el olfato');
+
+CREATE TABLE signos (
+    id SERIAL PRIMARY KEY,
+    descripcion VARCHAR(255)
+);
+
+CREATE TABLE enfermedades_sintomas (
+    id SERIAL PRIMARY KEY,
+    enfermedad_id INTEGER REFERENCES enfermedades(id),
+    sintoma_id INTEGER REFERENCES sintomas(id)
+);
+
+
+CREATE TABLE enfermedades_signos (
+    id SERIAL PRIMARY KEY,
+    enfermedad_id INTEGER REFERENCES enfermedades(id),
+    signo_id INTEGER REFERENCES signos(id)
+);
 
 """
 
