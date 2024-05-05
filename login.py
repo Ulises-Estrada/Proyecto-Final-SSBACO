@@ -6,30 +6,33 @@ from tkinter import messagebox
 conn = create_conn()
 cursor = create_cursor(conn)
 
+resultado = None
+
 def registrarse():
     root.destroy()
     import registrarUsuarios
+
+def getTipoUsuario():
+    return resultado
 
 # Función para iniciar sesión
 def iniciar_sesion():
     correo = correo_entry.get()
     contrasena = contrasena_entry.get()
 
+    global resultado
+
     # Verificar las credenciales en la base de datos
-    cursor.execute("SELECT * FROM usuarios WHERE correo = %s AND contraseña = %s", (correo, contrasena))
+    cursor.execute("SELECT rol FROM usuarios WHERE correo = %s AND contraseña = %s", (correo, contrasena))
     resultado = cursor.fetchone()
 
-    if resultado:
+    if resultado is not None:
         # Si se encuentra el usuario, cerrar la ventana de login y abrir la ventana de home
         root.destroy()
         import Perfil
     else:
         # Si no se encuentra el usuario, mostrar un mensaje de error
         messagebox.showerror("Inicio de sesión", "Correo electrónico o contraseña incorrectos")
-
-# Crear conexión a la base de datos
-conn = create_conn()
-cursor = create_cursor(conn)
 
 # Configuración de la ventana de la GUI
 root = tk.Tk()
@@ -41,13 +44,11 @@ bienvenida = tk.Label(root, text="Inicio Sesión",font=(12,'20')).grid(row=0, co
 
 correo_label = tk.Label(root, text="Correo electrónico:",font=(15))
 correo_label.grid(row=1, column=0,pady=10)
-
 correo_entry = tk.Entry(root,width=30,font=(15))
 correo_entry.grid(row=1, column=1)
 
 contrasena_label = tk.Label(root, text="Contraseña:",font=(15))
 contrasena_label.grid(row=2, column=0)
-
 contrasena_entry = tk.Entry(root, show="*",width=30,font=(15))
 contrasena_entry.grid(row=2, column=1,sticky="W")
 
