@@ -1,6 +1,6 @@
 import tkinter as tk
 from experta import Fact, Rule, KnowledgeEngine
-import psycopg2
+import psycopg2 
 from conexionDB import create_conn, create_cursor, psycopg2
 
 conn = create_conn()
