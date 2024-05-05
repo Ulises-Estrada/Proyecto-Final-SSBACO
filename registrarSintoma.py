@@ -1,10 +1,21 @@
-from conexionDB import create_conn, create_cursor
+from conexionDB import create_conn, create_cursor,psycopg2
 from PIL import Image, ImageTk
 import tkinter as tk
 from tkinter import messagebox
 
 conn = create_conn()
 cursor = create_cursor(conn)
+
+def register():
+
+    nombre = nombre_entry.get()
+
+    cursor.execute(
+        "INSERT INTO sintomas (descripcion) VALUES (%s)",
+        (nombre,)
+    )
+    conn.commit()
+    root.destroy()
 
 root = tk.Tk()
 root.title("Registro Paciente")
@@ -18,7 +29,7 @@ nombre_entry = tk.Entry(root,width=15,font=(15))
 nombre_entry.grid(row = 3, column = 1, pady=(10, 0), sticky="W")
 
 
-boton_registrar = tk.Button(root,text="Registrarse",font=(15)).grid(row=10, column=2, columnspan=2, pady=(20, 10))
+boton_registrar = tk.Button(root,text="Registrarse",font=(15),command=register).grid(row=10, column=2, columnspan=2, pady=(20, 10))
 
 
 root.mainloop()
