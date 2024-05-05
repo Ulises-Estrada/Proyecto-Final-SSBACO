@@ -6,6 +6,16 @@ from tkinter import messagebox
 conn = create_conn()
 cursor = create_cursor(conn)
 
+def register():
+
+    nombre = nombre_entry.get()
+
+    cursor.execute(
+        "INSERT INTO signos (descripcion) VALUES (%s)",
+        (nombre,)
+    )
+    conn.commit()
+
 root = tk.Tk()
 root.title("Registro-Signo")
 root.geometry("825x480")
@@ -18,7 +28,7 @@ nombre_entry = tk.Entry(root,width=15,font=(15))
 nombre_entry.grid(row = 3, column = 1, pady=(10, 0), sticky="W")
 
 
-boton_registrar = tk.Button(root,text="Registrarse",font=(15)).grid(row=10, column=2, columnspan=2, pady=(20, 10))
+boton_registrar = tk.Button(root,text="Registrarse",font=(15),command=register).grid(row=10, column=2, columnspan=2, pady=(20, 10))
 
 
 root.mainloop()

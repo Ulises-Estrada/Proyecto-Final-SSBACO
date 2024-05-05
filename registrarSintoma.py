@@ -15,7 +15,7 @@ def register():
         (nombre,)
     )
     conn.commit()
-    root.destroy()
+
 
 root = tk.Tk()
 root.title("Registro Paciente")
