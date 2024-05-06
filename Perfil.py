@@ -1,26 +1,73 @@
-from conexionDB import create_conn, create_cursor, close_conn
+from conexionDB import create_conn, create_cursor, close_conn, psycopg2
 from PIL import Image, ImageTk
+from login import getRolUsuario
 import tkinter as tk
+from tkinter import messagebox
 
-"""conn = create_conn()
+conn = create_conn()
 cursor = create_cursor(conn)
+rolUsuario = getRolUsuario()
 
 def cerrar_sesion():
    close_conn(conn)
    root.destroy()
-
-"""
-def editar_perfil():
-    root.destroy()
-    import actualizarUsuario
-
-def eliminar_perfil():
-    root.destroy()
-    import eliminarUsuario
+   import VentanaBienvenida
 
 def registrarUsuario():
-    root.destroy()
-    import registrarUsuarios
+    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora':
+        # Solo los administradores pueden registrar usuarios
+        import registrarUsuarios
+    else:
+        # Muestra un mensaje de error si el usuario no tiene permiso
+        messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
+
+def editar_perfil():
+    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora':
+        # Solo los administradores pueden editar perfiles de usuario
+        import actualizarUsuario
+    else:
+        # Muestra un mensaje de error si el usuario no tiene permiso
+        messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
+
+def eliminar_perfil():
+    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora':
+        # Solo los administradores pueden eliminar perfiles
+        import eliminarUsuario
+    else:
+        # Muestra un mensaje de error si el usuario no tiene permiso
+        messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
+
+def registrar_pacientes():
+    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora' or rolUsuario[0] == 'secretario' or rolUsuario[0] == 'secretaria':
+        # Solo el administrador y la secretaria pueden registrar pacientes
+        import pacientesRegistro
+    else:
+        # Muestra un mensaje de error si el usuario no tiene permiso
+        messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
+
+def consultar_pacientes():
+    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora' or rolUsuario[0] == 'secretario' or rolUsuario[0] == 'secretaria':
+        # Solo el administrador y la secretaria pueden consultar pacientes
+        import consultarPaciente
+    else:
+        # Muestra un mensaje de error si el usuario no tiene permiso
+        messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
+
+def eliminar_pacientes():
+    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora':
+         # Solo el administrador puede eliminar pacientes
+         import eliminarPaciente
+    else:
+        # Muestra un mensaje de error si el usuario no tiene permiso
+        messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
+
+def actualizar_pacientes():
+    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora':
+         # Solo el administrador puede eliminar pacientes
+         import actualizarPaciente
+    else:
+        # Muestra un mensaje de error si el usuario no tiene permiso
+        messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
 
 root = tk.Tk()
 root.title("Inicio")
@@ -70,29 +117,30 @@ pacientes.grid(row=5,column=1,pady=(20, 0))
 enfermedades = tk.Label(info_frame, text="Enfermedades",font=(12,'15'))
 enfermedades.grid(row=9,column=1,pady=(20, 0))
 
-"""
 # Crear botón para cerrar sesión
-boton_cerrar_sesion = tk.Button(root, text="Cerrar sesión",)
+boton_cerrar_sesion = tk.Button(root, text="Cerrar sesión", command=cerrar_sesion)
 boton_cerrar_sesion.grid()
-"""
 
-boton_registrar = tk.Button(info_frame, text=" Registrar ↵ ",command=editar_perfil,width=10,relief="groove")
+boton_registrar = tk.Button(info_frame, text=" Registrar ↵ ",command=registrarUsuario,width=10,relief="groove")
 boton_registrar.grid(row=2,column=1)
 
-boton_actualizar = tk.Button(info_frame, text=" Actualizar ↵ ",command=registrarUsuario,width=10,relief="groove")
+boton_actualizar = tk.Button(info_frame, text=" Actualizar ↵ ",command=editar_perfil,width=10,relief="groove")
 boton_actualizar.grid(row=3,column=1)
 
 boton_eliminar = tk.Button(info_frame, text=" Eliminar ↵ ",command=eliminar_perfil,width=10,relief="groove")
 boton_eliminar.grid(row=4,column=1)
 
-boton_registar_paciente = tk.Button(info_frame, text=" Registrar ↵ ",width=10,relief="groove")
+boton_registar_paciente = tk.Button(info_frame, text=" Registrar ↵ ", command=registrar_pacientes, width=10,relief="groove")
 boton_registar_paciente.grid(row=6,column=1)
 
-boton_actualizar_paciente = tk.Button(info_frame, text=" Actualizar ↵ ",width=10,relief="groove")
+boton_actualizar_paciente = tk.Button(info_frame, text=" Actualizar ↵ ", command=actualizar_pacientes, width=10,relief="groove")
 boton_actualizar_paciente.grid(row=7,column=1)
 
-boton_eliminar_paciente = tk.Button(info_frame, text=" Eliminar ↵ ",width=10,relief="groove")
-boton_eliminar_paciente.grid(row=8,column=1)
+boton_consultar_paciente = tk.Button(info_frame, text=" Consultar ↵ ", command=consultar_pacientes, width=10,relief="groove")
+boton_consultar_paciente.grid(row=8,column=1)
+
+boton_eliminar_paciente = tk.Button(info_frame, text=" Eliminar ↵ ", command=eliminar_pacientes, width=10,relief="groove")
+boton_eliminar_paciente.grid(row=9,column=1)
 
 boton_eliminar_enefermedad = tk.Button(info_frame, text=" Registrar ↵ ",width=10,relief="groove")
 boton_eliminar_enefermedad.grid(row=10,column=1)

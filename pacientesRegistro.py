@@ -69,7 +69,6 @@ medicamentos = tk.Label(root, text="Medicamentos",font=(15)).grid(row = 4, colum
 medicamentos_entry = tk.Entry(root,width=30,font=(15))
 medicamentos_entry.grid(row = 4, column = 3, pady=(10, 0), sticky="W")
 
-boton_registrar = tk.Button(root,text="Registrarse", command=register,font=(15)).grid(row=10, column=2, columnspan=2, pady=(20, 10))
-
+boton_registrar = tk.Button(root,text="Registrar", command=register,font=(15)).grid(row=10, column=2, columnspan=2, pady=(20, 10))
 
 root.mainloop()

@@ -27,7 +27,7 @@ root = tk.Tk()
 root.title("Registro")
 root.geometry("825x480")
 
-bienvenida = tk.Label(root, text="Registro de médicos",font=(12,'20')).grid(row=0, column=0, columnspan=4, pady=(20, 10))
+bienvenida = tk.Label(root, text="Registro de usuarios",font=(12,'20')).grid(row=0, column=0, columnspan=4, pady=(20, 10))
 
 info = tk.Label(root, text="Informacion Personal",font=(12,'15')).grid(row = 1, column = 0, sticky="nsew")
 

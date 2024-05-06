@@ -12,7 +12,7 @@ def registrarse():
     root.destroy()
     import registrarUsuarios
 
-def getTipoUsuario():
+def getRolUsuario():
     return resultado
 
 # Función para iniciar sesión
@@ -24,6 +24,7 @@ def iniciar_sesion():
 
     # Verificar las credenciales en la base de datos
     cursor.execute("SELECT rol FROM usuarios WHERE correo = %s AND contraseña = %s", (correo, contrasena))
+    
     resultado = cursor.fetchone()
 
     if resultado is not None:
