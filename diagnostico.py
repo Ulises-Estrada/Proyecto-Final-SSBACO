@@ -1,6 +1,5 @@
 import tkinter as tk
 from experta import Fact, Rule, KnowledgeEngine
-import psycopg2
 from conexionDB import create_conn, create_cursor, psycopg2
 
 conn = create_conn()
@@ -13,13 +12,11 @@ class Signo(Fact):
     pass
 
 class Diagnostico(KnowledgeEngine):
-    # Aquí irían tus reglas. Por ejemplo:
     @Rule(Sintoma(nombre='fiebre'))
     def regla_fiebre(self):
         self.declare(Sintoma(enfermedad='gripe'))
 
 def obtener_enfermedades_desde_bd(sintoma, signo):
-    # Aquí conectarías con tu base de datos para obtener las enfermedades
     cursor.execute(f"""
         SELECT e.nombre 
         FROM enfermedades_sintomas es
@@ -36,7 +33,6 @@ def obtener_enfermedades_desde_bd(sintoma, signo):
     rows = cursor.fetchall()
     return [row[0] for row in rows]
 
-
 def diagnosticar(sintoma, signo):
     motor = Diagnostico()
     motor.reset()
@@ -45,9 +41,9 @@ def diagnosticar(sintoma, signo):
     motor.run()
     return motor.facts
 
-"""def boton_diagnosticar_click():
-    sintomas = entry_sintoma.get().split(",")  # Esto dividirá los síntomas ingresados por comas
-    signos = entry_signo.get().split(",")  # Esto dividirá los signos ingresados por comas
+def boton_diagnosticar_click():
+    sintomas = sintomas_entry.get("1.0", tk.END).split(",")  # Esto dividirá los síntomas ingresados por comas
+    signos = signo_entry.get("1.0", tk.END).split(",")  # Esto dividirá los signos ingresados por comas
     enfermedades_potenciales = set()
 
     for sintoma in sintomas:
@@ -64,12 +60,11 @@ def diagnosticar(sintoma, signo):
     lista_enfermedades.delete(0, tk.END)
 
     for enfermedad in enfermedades_potenciales:
-        lista_enfermedades.insert(tk.END, enfermedad)"""
-
+        lista_enfermedades.insert(tk.END, enfermedad)
 
 def buscar_paciente():
     try:
-        id_paciente = id_entry.get()  # Asegúrate de tener un campo de entrada para el ID del paciente
+        id_paciente = id_entry.get()
         cursor.execute("SELECT * FROM pacientes WHERE idpaciente = %s", (id_paciente,))
         row = cursor.fetchone()
 
@@ -85,8 +80,6 @@ def buscar_paciente():
 
             genero_entry.delete(0, tk.END)
             genero_entry.insert(0, row[4])
-
-            # Añade aquí más campos según sea necesario
 
     except (Exception, psycopg2.DatabaseError) as error:
         print("Error al buscar al paciente:", error)
@@ -143,7 +136,6 @@ id = tk.Label(frame_izquierdo, text="ID",font=(15)).grid(row = 7, column = 0,sti
 id_entry = tk.Entry(frame_izquierdo,width=10,font=(15))
 id_entry.grid(row = 7, column = 1,sticky="W",pady=(10, 10))
 
-
 signo = tk.Label(frame_derecho, text="Signos",font=(12,'15')).grid(row = 1, column = 2,sticky="nsew",pady=(10, 10))
 signo_list = (tk.Listbox(frame_derecho, selectmode=tk.MULTIPLE,width=30))
 signo_list.grid(row = 2, column = 2,sticky="nsew",padx=(10, 10))
@@ -174,6 +166,11 @@ for row in rows:
 sintomas_entry = tk.Text(frame_derecho,height=9, width=30,font=(15),state='disabled')
 sintomas_entry.grid(row = 4, column = 3,pady=(10, 10))
 
+lista_enfermedades = (tk.Listbox(frame_derecho, selectmode=tk.MULTIPLE))
+lista_enfermedades.grid(row = 5, column = 3,sticky="nsew",padx=(10, 10))
+boton_diagnosticar = tk.Button(frame_derecho, text="Diagnosticar", command=boton_diagnosticar_click,font=(15))
+boton_diagnosticar.grid(row=5, column=2,sticky="nsew",pady=(10, 0))
+
 sintomas_list.bind('<<ListboxSelect>>', on_selectSintomas)
 
 boton_buscar = tk.Button(frame_izquierdo,text="Buscar con ID", command=buscar_paciente,font=(15)).grid(row=8, column=1,sticky="nsew",pady=(10, 0))
@@ -201,6 +198,5 @@ temp_entry.grid(row = 14, column = 1,sticky="W",pady=(10, 10))
 temp = tk.Label(frame_izquierdo, text="Frecuencia cardiaca",font=(15)).grid(row = 15, column = 0,sticky="nsew")
 temp_entry = tk.Entry(frame_izquierdo,width=30,font=(15))
 temp_entry.grid(row = 15, column = 1,sticky="W",pady=(10, 10))
-
 
 root.mainloop()
