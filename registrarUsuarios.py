@@ -7,7 +7,7 @@ import tkinter.messagebox as messagebox
 conn = create_conn()
 cursor = create_cursor(conn)
 
-def validate_input():
+def validaciones():
     nombre = nombre_entry.get()
     apellido = apellido_entry.get()
     telefono = telefono_entry.get()
@@ -23,7 +23,7 @@ def validate_input():
         return False
 
 def register():
-    if not validate_input():
+    if not validaciones():
         return
     nombre = nombre_entry.get()
     apellido = apellido_entry.get()
