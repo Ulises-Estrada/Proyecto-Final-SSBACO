@@ -53,11 +53,11 @@ contrasena_label.grid(row=2, column=0)
 contrasena_entry = tk.Entry(root, show="*",width=30,font=(15))
 contrasena_entry.grid(row=2, column=1,sticky="W")
 
-iniciar_sesion_button = tk.Button(root, text="Iniciar sesión", command=iniciar_sesion)
-iniciar_sesion_button.grid(row=3, column=0,columnspan=2,pady=10)
+iniciar_sesion_button = tk.Button(root, text="Iniciar sesión", command=iniciar_sesion,relief="groove")
+iniciar_sesion_button.grid(row=3, column=1,pady=10,padx=(10,10))
 
-registrarse_button = tk.Button(root, text="Registrarse", command=registrarse)
-registrarse_button.grid(row=3, column=1,columnspan=2,pady=10)
+registrarse_button = tk.Button(root, text="Registrarse", command=registrarse,relief="groove")
+registrarse_button.grid(row=3, column=0,pady=10,)
 
 image_path = "Logo.jpg"
 image = Image.open(image_path)
