@@ -57,7 +57,7 @@ iniciar_sesion_button = tk.Button(root, text="Iniciar sesión", command=iniciar_
 iniciar_sesion_button.grid(row=3, column=1,pady=10,padx=(10,10))
 
 registrarse_button = tk.Button(root, text="Registrarse", command=registrarse,relief="groove")
-registrarse_button.grid(row=3, column=0,pady=10,)
+registrarse_button.grid(row=3, column=0,pady=10)
 
 image_path = "Logo.jpg"
 image = Image.open(image_path)
