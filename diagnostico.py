@@ -1,66 +1,18 @@
 import tkinter as tk
-from experta import Fact, Rule, KnowledgeEngine
 from conexionDB import create_conn, create_cursor, psycopg2
 
 conn = create_conn()
 cursor = create_cursor(conn)
 
-class Sintoma(Fact):
-    pass
+def obtener_sintomas_enfermedad(enfermedad_id):
+    cursor.execute("SELECT s.descripcion FROM sintomas s JOIN enfermedades_sintomas es ON s.id = es.sintoma_id WHERE es.enfermedad_id = %s", (enfermedad_id,))
+    sintomas_enfermedad = [row[0] for row in cursor.fetchall()]
+    return sintomas_enfermedad
 
-class Signo(Fact):
-    pass
-
-class Diagnostico(KnowledgeEngine):
-    @Rule(Sintoma(nombre='fiebre'))
-    def regla_fiebre(self):
-        self.declare(Sintoma(enfermedad='gripe'))
-
-def obtener_enfermedades_desde_bd(sintoma, signo):
-    cursor.execute(f"""
-        SELECT e.nombre 
-        FROM enfermedades_sintomas es
-        JOIN enfermedades e ON es.enfermedad_id = e.id
-        JOIN sintomas s ON es.sintoma_id = s.id
-        WHERE s.descripcion = '{sintoma}'
-        UNION 
-        SELECT e.nombre 
-        FROM enfermedades_signos eg
-        JOIN enfermedades e ON eg.enfermedad_id = e.id
-        JOIN signos g ON eg.signo_id = g.id
-        WHERE g.descripcion = '{signo}'
-    """)
-    rows = cursor.fetchall()
-    return [row[0] for row in rows]
-
-def diagnosticar(sintoma, signo):
-    motor = Diagnostico()
-    motor.reset()
-    motor.declare(Sintoma(nombre=sintoma))
-    motor.declare(Signo(nombre=signo))
-    motor.run()
-    return motor.facts
-
-def boton_diagnosticar_click():
-    sintomas = sintomas_entry.get("1.0", tk.END).split(",")  # Esto dividirá los síntomas ingresados por comas
-    signos = signo_entry.get("1.0", tk.END).split(",")  # Esto dividirá los signos ingresados por comas
-    enfermedades_potenciales = set()
-
-    for sintoma in sintomas:
-        sintoma = sintoma.strip()  # Esto eliminará los espacios en blanco alrededor de los nombres de los síntomas
-        for signo in signos:
-            signo = signo.strip()  # Esto eliminará los espacios en blanco alrededor de los nombres de los signos
-            enfermedades = obtener_enfermedades_desde_bd(sintoma, signo)
-
-            if not enfermedades_potenciales:
-                enfermedades_potenciales.update(enfermedades)
-            else:
-                enfermedades_potenciales.intersection_update(enfermedades)
-
-    lista_enfermedades.delete(0, tk.END)
-
-    for enfermedad in enfermedades_potenciales:
-        lista_enfermedades.insert(tk.END, enfermedad)
+def obtener_signos_enfermedad(enfermedad_id):
+    cursor.execute("SELECT s.descripcion FROM signos s JOIN enfermedades_signos es ON s.id = es.signo_id WHERE es.enfermedad_id = %s", (enfermedad_id,))
+    signos_enfermedad = [row[0] for row in cursor.fetchall()]
+    return signos_enfermedad
 
 def buscar_paciente():
     try:
@@ -83,6 +35,45 @@ def buscar_paciente():
 
     except (Exception, psycopg2.DatabaseError) as error:
         print("Error al buscar al paciente:", error)
+
+def diagnosticar_enfermedades():
+    # Obtener signos y síntomas seleccionados
+    sintomas_seleccionados = [sintomas_list.get(i) for i in sintomas_list.curselection()]
+    signos_seleccionados = [signo_list.get(i) for i in signo_list.curselection()]
+
+    # Consultar la base de datos para encontrar las enfermedades asociadas
+    enfermedades_probabilidad = {}
+
+    cursor.execute("SELECT id, nombre FROM enfermedades")
+    enfermedades = cursor.fetchall()
+
+    for enfermedad_id, nombre in enfermedades:
+        # Calcular la probabilidad de esta enfermedad basada en signos y síntomas seleccionados
+        probabilidad = calcular_probabilidad(enfermedad_id, sintomas_seleccionados, signos_seleccionados)
+        enfermedades_probabilidad[nombre] = probabilidad
+
+    # Ordenar las enfermedades por probabilidad (de mayor a menor)
+    enfermedades_probabilidad_ordenadas = sorted(enfermedades_probabilidad.items(), key=lambda x: x[1], reverse=True)
+
+    # Mostrar las enfermedades sugeridas junto con su probabilidad
+    lista_enfermedades.delete(0, tk.END)  # Limpiar la lista de enfermedades primero
+    for enfermedad, probabilidad in enfermedades_probabilidad_ordenadas:
+        lista_enfermedades.insert(tk.END, f"{enfermedad}: {probabilidad:.2f}%")
+
+def calcular_probabilidad(enfermedad, sintomas_seleccionados, signos_seleccionados):
+    # Obtener signos y síntomas asociados a esta enfermedad desde la base de datos
+    sintomas_enfermedad = obtener_sintomas_enfermedad(enfermedad)
+    signos_enfermedad = obtener_signos_enfermedad(enfermedad)
+
+    # Calcular la cantidad de signos y síntomas compartidos con los seleccionados
+    sintomas_compartidos = len(set(sintomas_seleccionados).intersection(sintomas_enfermedad))
+    signos_compartidos = len(set(signos_seleccionados).intersection(signos_enfermedad))
+
+    # Calcular la probabilidad como el porcentaje de signos y síntomas compartidos
+    total_sintomas_signos_enfermedad = len(sintomas_enfermedad) + len(signos_enfermedad)
+    probabilidad = ((sintomas_compartidos + signos_compartidos) / total_sintomas_signos_enfermedad) * 100
+
+    return probabilidad
 
 def on_select(event):
     if signo_list.curselection():
@@ -136,6 +127,7 @@ id = tk.Label(frame_izquierdo, text="ID",font=(15)).grid(row = 7, column = 0,sti
 id_entry = tk.Entry(frame_izquierdo,width=10,font=(15))
 id_entry.grid(row = 7, column = 1,sticky="W",pady=(10, 10))
 
+
 signo = tk.Label(frame_derecho, text="Signos",font=(12,'15')).grid(row = 1, column = 2,sticky="nsew",pady=(10, 10))
 signo_list = (tk.Listbox(frame_derecho, selectmode=tk.MULTIPLE,width=30))
 signo_list.grid(row = 2, column = 2,sticky="nsew",padx=(10, 10))
@@ -168,7 +160,8 @@ sintomas_entry.grid(row = 4, column = 3,pady=(10, 10))
 
 lista_enfermedades = (tk.Listbox(frame_derecho, selectmode=tk.MULTIPLE))
 lista_enfermedades.grid(row = 5, column = 3,sticky="nsew",padx=(10, 10))
-boton_diagnosticar = tk.Button(frame_derecho, text="Diagnosticar", command=boton_diagnosticar_click,font=(15))
+
+boton_diagnosticar = tk.Button(frame_derecho, text="Diagnosticar",command=diagnosticar_enfermedades,font=(15))
 boton_diagnosticar.grid(row=5, column=2,sticky="nsew",pady=(10, 0))
 
 sintomas_list.bind('<<ListboxSelect>>', on_selectSintomas)
