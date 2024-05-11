@@ -135,12 +135,6 @@ medicamentos_text.grid(row=4, column=3, pady=(10, 0), sticky="W")
 boton_buscar = tk.Button(frame_derecho,text="Buscar con ID", command=buscar,font=(11),relief="groove").grid(row=5, column=2,sticky="nsew",pady=(10, 0))
 boton_actualizar = tk.Button(frame_derecho,text="Actualizar", command=actualizar,font=(11),relief="groove").grid(row=5, column=3,sticky="nsew",pady=(10, 0))
 
-
-"""boton_buscar = tk.Button(frame_entrada,text="Buscar con ID", command=buscar,font=(15)).grid(row=10, column=0,sticky="nsew",pady=(10, 0))
-
-boton_actualizar = tk.Button(frame_entrada,text="Actualizar", command=actualizar,font=(15)).grid(row=10, column=1,sticky="nsew",pady=(10, 0))"""
-
-
 frame_tabla = tk.Frame(root)
 frame_tabla.grid(row=1, column=3, sticky="nsew",padx=(20, 10))
 
