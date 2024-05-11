@@ -14,7 +14,7 @@ def tabla():
 def buscar():
     try:
         id_usuario = id_entry.get()
-        cursor.execute("SELECT * FROM usuarios WHERE idusuarios = %s", (id_usuario,))
+        cursor.execute("SELECT * FROM usuarios WHERE idusuario = %s", (id_usuario,))
         row = cursor.fetchone()
 
         if row:
@@ -24,8 +24,8 @@ def buscar():
             apellido_entry.delete(0, tk.END)
             apellido_entry.insert(0, row[2])
 
-            genero_entry.delete(0, tk.END)
-            genero_entry.insert(0, row[3])
+            genero_combo.delete(0, tk.END)
+            genero_combo.insert(0, row[3])
 
             telefono_entry.delete(0, tk.END)
             telefono_entry.insert(0, row[4])
@@ -36,8 +36,8 @@ def buscar():
             contrasena_entry.delete(0, tk.END)
             contrasena_entry.insert(0, row[6])
 
-            rol_entry.delete(0, tk.END)
-            rol_entry.insert(0, row[7])
+            rol_combo.delete(0, tk.END)
+            rol_combo.insert(0, row[7])
             actualizar_treeview()
     except (Exception, psycopg2.DatabaseError) as error:
         print("Error al buscar al usuario:", error)
@@ -46,16 +46,16 @@ def actualizar():
     id_usuario = id_entry.get()
     nombre = nombre_entry.get()
     apellido = apellido_entry.get()
-    genero = genero_entry.get()
+    genero = genero_combo.get()
     telefono = telefono_entry.get()
     correo = correo_entry.get()
     contrasena = contrasena_entry.get()
-    rol = rol_entry.get()
+    rol = rol_combo.get()
 
     cursor.execute("""
         UPDATE usuarios
-        SET nombre = %s, apellido = %s, genero = %s, telefono = %s, correo = %s, contraseña = %s, rol = %s
-        WHERE idusuarios = %s
+        SET nombre = %s, apellidos = %s, genero = %s, telefono = %s, correo = %s, contraseña = %s, rol = %s
+        WHERE idusuario = %s
     """, (nombre, apellido, genero, telefono, correo, contrasena, rol, id_usuario))
 
     conn.commit()
@@ -82,9 +82,10 @@ frame_entrada.grid(row=2, column=0, sticky="nsew",padx=10)
 
 info = tk.Label(root, text="Informacion de Usuario",font=(12,'15')).grid(row = 1, column = 0, sticky="nsew")
 
-id = tk.Label(frame_entrada, text="ID",font=(15)).grid(row = 2, column = 0,sticky="nsew")
-id_entry = tk.Entry(frame_entrada,width=30,font=(15))
+id = tk.Label(frame_entrada, text="ID",font=(15)).grid(row = 2, column = 0,sticky="nsew",)
+id_entry = tk.Entry(frame_entrada,width=5,font=(15))
 id_entry.grid(row = 2, column = 1,sticky="W")
+
 
 nombre = tk.Label(frame_entrada, text="Nombre",font=(15)).grid(row = 3, column = 0,sticky="nsew")
 nombre_entry = tk.Entry(frame_entrada,width=30,font=(15))
@@ -94,9 +95,11 @@ apellido = tk.Label(frame_entrada, text="Apellido",font=(15)).grid(row = 4, colu
 apellido_entry = tk.Entry(frame_entrada,width=30,font=(15))
 apellido_entry.grid(row = 4, column = 1)
 
-genero = tk.Label(frame_entrada, text="Genero",font=(15)).grid(row = 5, column = 0,sticky="nsew")
-genero_entry = tk.Entry(frame_entrada,width=30,font=(15))
-genero_entry.grid(row = 5, column = 1)
+genero_label = tk.Label(frame_entrada, text="Genero",font=(15))
+genero_label.grid(row = 5, column = 0,sticky="nsew")
+genero_options = ["Masculino", "Femenino", "No Binario"]
+genero_combo = ttk.Combobox(frame_entrada, values=genero_options, width=27, font=(15), state="readonly")
+genero_combo.grid(row=5, column=1)
 
 telefono = tk.Label(frame_entrada, text="Teléfono",font=(15)).grid(row = 6, column = 0,sticky="nsew")
 telefono_entry = tk.Entry(frame_entrada,width=30,font=(15))
@@ -110,9 +113,11 @@ contra = tk.Label(frame_entrada, text="Contraseña",font=(15)).grid(row = 8, col
 contrasena_entry = tk.Entry(frame_entrada, show="*",width=30,font=(15))
 contrasena_entry.grid(row = 8, column = 1)
 
-rol = tk.Label(frame_entrada, text="Rol",font=(15)).grid(row = 9, column = 0,sticky="nsew")
-rol_entry = tk.Entry(frame_entrada,width=30,font=(15))
-rol_entry.grid(row = 9, column = 1)
+rol_label = tk.Label(frame_entrada, text="Rol",font=(15))
+rol_label.grid(row = 9, column = 0,sticky="nsew")
+rol_options = ["Administrador", "Médico", "Secretaria"]
+rol_combo = ttk.Combobox(frame_entrada, values=rol_options, width=27, font=(15), state="readonly")
+rol_combo.grid(row=9, column=1)
 
 boton_buscar = tk.Button(frame_entrada,text="Buscar con ID", command=buscar,font=(15)).grid(row=10, column=0,sticky="nsew",pady=(10, 0))
 boton_actualizar = tk.Button(frame_entrada,text="Actualizar", command=actualizar,font=(15)).grid(row=10, column=1,sticky="nsew",pady=(10, 0))
@@ -153,6 +158,5 @@ for row in data:
     tree.insert("", tk.END, values=row)
 
 tree.grid(row=1,column=0)
-
 
 root.mainloop()
