@@ -108,6 +108,6 @@ medicamentos_label.grid(row=4, column=2, pady=(10, 0), sticky="nsew")
 medicamentos_text = tk.Text(frame_derecho, width=30, height=2, font=(15))
 medicamentos_text.grid(row=4, column=3, pady=(10, 0), sticky="W")
 
-boton_registrar = tk.Button(frame_derecho,text="Registrar", command=register,font=(15)).grid(row=10, column=2, columnspan=2, pady=(20, 10))
+boton_registrar = tk.Button(frame_derecho,text="Registrar", command=register,font=(15),relief="groove").grid(row=10, column=2, columnspan=2, pady=(20, 10),)
 
 root.mainloop()
