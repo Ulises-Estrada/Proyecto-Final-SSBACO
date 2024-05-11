@@ -76,7 +76,7 @@ rows = cursor.fetchall()
 for row in rows:
     signo_list.insert(tk.END, row[0])
 
-signo_entry = tk.Text(root,height=9, width=30,font=(15),state='disabled')
+signo_entry = tk.Text(root,height=9, width=30,font=(12),state='disabled')
 signo_entry.grid(row = 6, column = 1,pady=(10, 10))
 
 signo_list.bind('<<ListboxSelect>>', on_select)
@@ -92,7 +92,7 @@ rows = cursor.fetchall()
 for row in rows:
     sintomas_list.insert(tk.END, row[0])
 
-sintomas_entry = tk.Text(root,height=9, width=30,font=(15),state='disabled')
+sintomas_entry = tk.Text(root,height=9, width=30,font=(12),state='disabled')
 sintomas_entry.grid(row = 8, column = 1,pady=(10, 10))
 
 sintomas_list.bind('<<ListboxSelect>>', on_selectSintomas)
