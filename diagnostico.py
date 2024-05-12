@@ -45,13 +45,12 @@ class Sintoma(Fact):
     pass
 
 class Diagnostico(KnowledgeEngine):
-    # Aquí irían tus reglas. Por ejemplo:
     @Rule(Sintoma(nombre='fiebre'))
     def regla_fiebre(self):
         self.declare(Sintoma(enfermedad='gripe'))
 
 def obtener_sintomas_desde_bd(sintoma):
-    # Aquí conectarías con tu base de datos para obtener los síntomas
+    
     cursor.execute(f"SELECT enfermedad FROM enfermedades_sintomas WHERE sintoma = '{sintoma}'")
     rows = cursor.fetchall()
     return [row[0] for row in rows]

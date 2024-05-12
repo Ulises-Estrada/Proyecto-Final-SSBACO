@@ -63,8 +63,16 @@ def eliminar_pacientes():
 
 def actualizar_pacientes():
     if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora':
-         # Solo el administrador puede eliminar pacientes
+         # Solo el administrador puede actualizar pacientes
          import actualizarPaciente
+    else:
+        # Muestra un mensaje de error si el usuario no tiene permiso
+        messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
+
+def registrar_enfermedad():
+    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora' or rolUsuario[0] == 'medico' or rolUsuario[0] == 'medica':
+        # Solo el administrador y el medico pueden registrar enfermedades
+        import registrarEnfermedad
     else:
         # Muestra un mensaje de error si el usuario no tiene permiso
         messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
@@ -121,6 +129,7 @@ enfermedades.grid(row=9,column=1,pady=(20, 0))
 boton_cerrar_sesion = tk.Button(root, text="Cerrar sesión", command=cerrar_sesion)
 boton_cerrar_sesion.grid()
 
+# Usuarios
 boton_registrar = tk.Button(info_frame, text=" Registrar ↵ ",command=registrarUsuario,width=10,relief="groove")
 boton_registrar.grid(row=2,column=1)
 
@@ -130,6 +139,7 @@ boton_actualizar.grid(row=3,column=1)
 boton_eliminar = tk.Button(info_frame, text=" Eliminar ↵ ",command=eliminar_perfil,width=10,relief="groove")
 boton_eliminar.grid(row=4,column=1)
 
+# Pacientes
 boton_registar_paciente = tk.Button(info_frame, text=" Registrar ↵ ", command=registrar_pacientes, width=10,relief="groove")
 boton_registar_paciente.grid(row=6,column=1)
 
@@ -142,13 +152,14 @@ boton_consultar_paciente.grid(row=8,column=1)
 boton_eliminar_paciente = tk.Button(info_frame, text=" Eliminar ↵ ", command=eliminar_pacientes, width=10,relief="groove")
 boton_eliminar_paciente.grid(row=9,column=1)
 
-boton_eliminar_enefermedad = tk.Button(info_frame, text=" Registrar ↵ ",width=10,relief="groove")
-boton_eliminar_enefermedad.grid(row=10,column=1)
+# Enfermedad
+boton_registrar_enefermedad = tk.Button(info_frame, text=" Registrar ↵ ", command=registrar_enfermedad, width=10,relief="groove")
+boton_registrar_enefermedad.grid(row=10,column=1)
 
-boton_actualizar_enefermedad = tk.Button(info_frame, text=" Actualizar ↵ ",width=10,relief="groove")
+boton_actualizar_enefermedad = tk.Button(info_frame, text=" Actualizar ↵ ", command=actualizar_enfermedad, width=10,relief="groove")
 boton_actualizar_enefermedad.grid(row=11,column=1)
 
-boton_eliminar_enefermedad = tk.Button(info_frame, text=" Eliminar ↵ ",width=10,relief="groove")
+boton_eliminar_enefermedad = tk.Button(info_frame, text=" Eliminar ↵ ", command=eliminar_enfermedad, width=10,relief="groove")
 boton_eliminar_enefermedad.grid(row=12,column=1)
 
 root.mainloop()
