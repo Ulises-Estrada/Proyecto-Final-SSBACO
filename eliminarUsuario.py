@@ -32,10 +32,16 @@ def tabla():
 
 root = tk.Tk()
 root.title("Registro")
-root.geometry("1000x300")
+root.geometry("850x400")
+
+frame_entrada = tk.Frame(root)
+frame_entrada.grid(row=1, column=1, sticky="nsew",padx=10,columnspan=2)
+
+frame_tabla = tk.Frame(root)
+frame_tabla.grid(row=2, column=1, sticky="nsew",)
 
 data = tabla()
-tree = ttk.Treeview(root)
+tree = ttk.Treeview(frame_tabla)
 
 tree["columns"]=("idusuarios", "nombre", "apellido", "genero","telefono", "correo", "contraseña", "rol")
 
@@ -65,14 +71,14 @@ tree.heading("rol", text="Rol",anchor=tk.W)
 for row in data:
     tree.insert("", tk.END, values=row)
 
-bienvenida = tk.Label(root, text="Eliminación de Usuarios",font=(12,'20')).grid(row=0, column=1, sticky="NSEW",columnspan=2,)
+bienvenida = tk.Label(root, text="Eliminación de Usuarios",font=(12,'20')).grid(row=0, column=0, sticky="NSEW",columnspan=2,pady=(10, 10))
 
-tree.grid(row=1,column=1,columnspan=2)
+tree.grid(row=2,column=0,columnspan=2,padx=(10, 10))
 
-id = tk.Label(root, text="ID").grid(row=2, column=0, )
-id_entry = tk.Entry(root)
-id_entry.grid(row=2, column=1)
+id = tk.Label(frame_entrada, text="ID",font=(12,'20')).grid(row=1, column=1,pady=(10, 10))
+id_entry = tk.Entry(frame_entrada,font=(15),width=5)
+id_entry.grid(row=1, column=2)
 
-boton_eliminar = tk.Button(root, text="Eliminar", command=eliminar_usuario).grid(row=2, column=2)
+boton_eliminar = tk.Button(frame_entrada, text="Eliminar", command=eliminar_usuario,relief="groove").grid(row=1, column=4,pady=(10, 10),padx=(10, 10))
 
 root.mainloop()

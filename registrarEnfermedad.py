@@ -51,7 +51,7 @@ def registrar_enfermedad():
 
 root = tk.Tk()
 root.title("Registro-Enfermedad")
-root.geometry("825x950")
+root.geometry("500x950")
 
 bienvenida = tk.Label(root, text="Registro de Enfermedad",font=(12,'20')).grid(row=0, column=0, columnspan=4, pady=(10, 10))
 
@@ -76,7 +76,7 @@ rows = cursor.fetchall()
 for row in rows:
     signo_list.insert(tk.END, row[0])
 
-signo_entry = tk.Text(root,height=9, width=30,font=(15),state='disabled')
+signo_entry = tk.Text(root,height=9, width=30,font=(12),state='disabled')
 signo_entry.grid(row = 6, column = 1,pady=(10, 10))
 
 signo_list.bind('<<ListboxSelect>>', on_select)
@@ -92,7 +92,7 @@ rows = cursor.fetchall()
 for row in rows:
     sintomas_list.insert(tk.END, row[0])
 
-sintomas_entry = tk.Text(root,height=9, width=30,font=(15),state='disabled')
+sintomas_entry = tk.Text(root,height=9, width=30,font=(12),state='disabled')
 sintomas_entry.grid(row = 8, column = 1,pady=(10, 10))
 
 sintomas_list.bind('<<ListboxSelect>>', on_selectSintomas)
@@ -109,16 +109,8 @@ pruebaPost = tk.Label(root, text="Pruebas Post-mortem",font=(15)).grid(row = 11,
 pruebaPost_entry = tk.Text(root,height=2, width=30,font=(15))
 pruebaPost_entry.grid(row = 11, column = 1)
 
-image_path = "Logo.jpg"
-image = Image.open(image_path)
-image = image.resize((300, 300))
-photo = ImageTk.PhotoImage(image)
 
-image_label = tk.Label(root, image=photo)
-image_label.grid(row=2, column=2, rowspan=8, columnspan=2, padx=10, pady=10, sticky="nsew")
-
-
-boton_registrar = tk.Button(root,text="Registrarse", font=(15),command=registrar_enfermedad).grid(row=10, column=2, columnspan=2, pady=(20, 10))
+boton_registrar = tk.Button(root,text="Guardar", font=(15),command=registrar_enfermedad,relief="groove").grid(row=12, column=1, columnspan=2, pady=(20, 10))
 
 root.mainloop()
 
