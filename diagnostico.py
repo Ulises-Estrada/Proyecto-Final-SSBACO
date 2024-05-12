@@ -36,18 +36,6 @@ def buscar_paciente():
     except (Exception, psycopg2.DatabaseError) as error:
         print("Error al buscar al paciente:", error)
 
-<<<<<<< HEAD
-class Diagnostico(KnowledgeEngine):
-    @Rule(Sintoma(nombre='fiebre'))
-    def regla_fiebre(self):
-        self.declare(Sintoma(enfermedad='gripe'))
-
-def obtener_sintomas_desde_bd(sintoma):
-    
-    cursor.execute(f"SELECT enfermedad FROM enfermedades_sintomas WHERE sintoma = '{sintoma}'")
-    rows = cursor.fetchall()
-    return [row[0] for row in rows]
-=======
 def diagnosticar_enfermedades():
     # Obtener signos y síntomas seleccionados
     sintomas_seleccionados = [sintomas_list.get(i) for i in sintomas_list.curselection()]
@@ -55,7 +43,6 @@ def diagnosticar_enfermedades():
 
     # Consultar la base de datos para encontrar las enfermedades asociadas
     enfermedades_probabilidad = {}
->>>>>>> bcdca337598b8b9ba4ae3340a7aee4440475fd4a
 
     cursor.execute("SELECT id, nombre FROM enfermedades")
     enfermedades = cursor.fetchall()
@@ -68,10 +55,48 @@ def diagnosticar_enfermedades():
     # Ordenar las enfermedades por probabilidad (de mayor a menor)
     enfermedades_probabilidad_ordenadas = sorted(enfermedades_probabilidad.items(), key=lambda x: x[1], reverse=True)
 
+    # Crear una nueva ventana para mostrar el resultado
+    resultado_window = tk.Toplevel()
+    resultado_window.title("Resultado del Diagnóstico")
+    resultado_window.geometry("195x165")
+
+    # Crear una lista para mostrar el resultado
+    lista_resultado = tk.Listbox(resultado_window)
+    lista_resultado.pack()
+
     # Mostrar las enfermedades sugeridas junto con su probabilidad
-    lista_enfermedades.delete(0, tk.END)  # Limpiar la lista de enfermedades primero
+    lista_resultado.delete(0, tk.END)  # Limpiar la lista de enfermedades primero
     for enfermedad, probabilidad in enfermedades_probabilidad_ordenadas:
-        lista_enfermedades.insert(tk.END, f"{enfermedad}: {probabilidad:.2f}%")
+        lista_resultado.insert(tk.END, f"{enfermedad}: {probabilidad:.2f}%")
+
+    # Agregar botones para CRUD del historial médico
+    boton_crear_historial = tk.Button(resultado_window, text="Crear Historial", command=crear_historial_medico)
+    boton_crear_historial.grid(row=16, column=0, sticky="nsew", pady=(10, 0))
+
+    boton_leer_historial = tk.Button(resultado_window, text="Leer Historial", command=leer_historial_medico)
+    boton_leer_historial.grid(row=16, column=1, sticky="nsew", pady=(10, 0))
+
+    boton_actualizar_historial = tk.Button(resultado_window, text="Actualizar Historial", command=actualizar_historial_medico)
+    boton_actualizar_historial.grid(row=17, column=0, sticky="nsew", pady=(10, 0))
+
+    boton_eliminar_historial = tk.Button(resultado_window, text="Eliminar Historial", command=eliminar_historial_medico)
+    boton_eliminar_historial.grid(row=17, column=1, sticky="nsew", pady=(10, 0))
+
+def crear_historial_medico(paciente_id, enfermedad_id):
+    
+    pass
+
+def leer_historial_medico():
+    # Lógica para leer el historial médico de un paciente
+    pass
+
+def actualizar_historial_medico():
+    # Lógica para actualizar el historial médico de un paciente
+    pass
+
+def eliminar_historial_medico():
+    # Lógica para eliminar el historial médico de un paciente
+    pass
 
 def calcular_probabilidad(enfermedad, sintomas_seleccionados, signos_seleccionados):
     # Obtener signos y síntomas asociados a esta enfermedad desde la base de datos
