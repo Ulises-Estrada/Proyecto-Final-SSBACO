@@ -22,6 +22,8 @@ def validaciones():
         messagebox.showerror("Error", "El teléfono debe contener solo números.")
         return False
 
+    return True  # Devolver True si todas las validaciones son exitosas
+
 def register():
     if not validaciones():
         return
@@ -89,7 +91,6 @@ photo = ImageTk.PhotoImage(image)
 
 image_label = tk.Label(root, image=photo)
 image_label.grid(row=2, column=2, rowspan=8, columnspan=2, padx=10, pady=10, sticky="nsew")
-
 
 boton_registrar = tk.Button(root,text="Registrarse", command=register,font=(15)).grid(row=10, column=2, columnspan=2, pady=(20, 10))
 

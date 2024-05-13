@@ -1,5 +1,6 @@
 import tkinter as tk
 from conexionDB import create_conn, create_cursor, psycopg2
+from datetime import datetime
 
 conn = create_conn()
 cursor = create_cursor(conn)
@@ -17,7 +18,7 @@ def obtener_signos_enfermedad(enfermedad_id):
 def buscar_paciente():
     try:
         id_paciente = id_entry.get()
-        cursor.execute("SELECT * FROM pacientes WHERE idpaciente = %s", (id_paciente,))
+        cursor.execute("SELECT * FROM pacientes WHERE id = %s", (id_paciente,))
         row = cursor.fetchone()
 
         if row:
@@ -37,6 +38,13 @@ def buscar_paciente():
         print("Error al buscar al paciente:", error)
 
 def diagnosticar_enfermedades():
+    # Obtener datos del diagnostico
+    paciente_id = id_entry.get()
+    fecha_diagnostico = fech_diag_entry.get()
+    hora_diagnostico = hora_entry.get() 
+    presion_arterial = presion_entry.get()
+    temperatura = temp_entry.get()
+
     # Obtener signos y síntomas seleccionados
     sintomas_seleccionados = [sintomas_list.get(i) for i in sintomas_list.curselection()]
     signos_seleccionados = [signo_list.get(i) for i in signo_list.curselection()]
@@ -46,6 +54,8 @@ def diagnosticar_enfermedades():
 
     cursor.execute("SELECT id, nombre FROM enfermedades")
     enfermedades = cursor.fetchall()
+
+    cursor.execute()
 
     for enfermedad_id, nombre in enfermedades:
         # Calcular la probabilidad de esta enfermedad basada en signos y síntomas seleccionados
@@ -69,34 +79,82 @@ def diagnosticar_enfermedades():
     for enfermedad, probabilidad in enfermedades_probabilidad_ordenadas:
         lista_resultado.insert(tk.END, f"{enfermedad}: {probabilidad:.2f}%")
 
-    # Agregar botones para CRUD del historial médico
-    boton_crear_historial = tk.Button(resultado_window, text="Crear Historial", command=crear_historial_medico)
+    # Obtener el nombre y el porcentaje de la enfermedad con la probabilidad más alta
+    enfermedad_mas_probable, probabilidad_mas_alta = enfermedades_probabilidad_ordenadas[0]
+
+    # Agregar un botón para crear el historial médico con los parámetros obtenidos
+    boton_crear_historial = tk.Button(resultado_window, text="Crear Historial", command=lambda: crear_historial_medico(paciente_id, fecha_diagnostico, enfermedad_mas_probable, probabilidad_mas_alta))
     boton_crear_historial.grid(row=16, column=0, sticky="nsew", pady=(10, 0))
 
-    boton_leer_historial = tk.Button(resultado_window, text="Leer Historial", command=leer_historial_medico)
-    boton_leer_historial.grid(row=16, column=1, sticky="nsew", pady=(10, 0))
+    # boton_leer_historial = tk.Button(resultado_window, text="Leer Historial", command=leer_historial_medico)
+    # boton_leer_historial.grid(row=16, column=1, sticky="nsew", pady=(10, 0))
 
-    boton_actualizar_historial = tk.Button(resultado_window, text="Actualizar Historial", command=actualizar_historial_medico)
-    boton_actualizar_historial.grid(row=17, column=0, sticky="nsew", pady=(10, 0))
+    # boton_actualizar_historial = tk.Button(resultado_window, text="Actualizar Historial", command=lambda: actualizar_historial_medico(historial_id, fecha_diagnostico, probabilidad))
+    # boton_actualizar_historial.grid(row=17, column=0, sticky="nsew", pady=(10, 0))
 
-    boton_eliminar_historial = tk.Button(resultado_window, text="Eliminar Historial", command=eliminar_historial_medico)
-    boton_eliminar_historial.grid(row=17, column=1, sticky="nsew", pady=(10, 0))
+    # boton_eliminar_historial = tk.Button(resultado_window, text="Eliminar Historial", command=lambda: eliminar_historial_medico(historial_id))
+    # boton_eliminar_historial.grid(row=17, column=1, sticky="nsew", pady=(10, 0))
 
-def crear_historial_medico(paciente_id, enfermedad_id):
-    
-    pass
 
-def leer_historial_medico():
-    # Lógica para leer el historial médico de un paciente
-    pass
+def crear_historial_medico(paciente_id, fecha_diagnostico, enfermedad_mas_probable, probabilidad_mas_alta):
+    try:
+        # Ejecutar la consulta SQL para insertar un nuevo registro en Historial_Medico
+        cursor.execute("""
+            INSERT INTO historial_medico (paciente_id, fecha_diagnostico, probabilidad, enfermedad)
+            VALUES (%s, %s, %s, %s)
+        """, (paciente_id, fecha_diagnostico, probabilidad_mas_alta, enfermedad_mas_probable))
 
-def actualizar_historial_medico():
-    # Lógica para actualizar el historial médico de un paciente
-    pass
+        # Confirmar los cambios en la base de datos
+        conn.commit()
 
-def eliminar_historial_medico():
-    # Lógica para eliminar el historial médico de un paciente
-    pass
+        print("Historial médico creado exitosamente.")
+
+    except psycopg2.Error as e:
+        print("Error al crear el historial médico:", e)
+
+def leer_historial_medico(paciente_id):
+    try:
+        # Ejecutar la consulta SQL para leer el historial médico de un paciente
+        cursor.execute("""
+            SELECT * FROM historial_medico WHERE paciente_id = %s""", (paciente_id,))
+        
+        # Obtener los resultados de la consulta
+        historial = cursor.fetchall()
+
+        # Retornar los resultados
+        return historial
+
+    except psycopg2.Error as e:
+        print("Error al leer el historial médico:", e)
+
+def actualizar_historial_medico(historial_id, fecha_diagnostico, probabilidad):
+    try:
+        # Ejecutar la consulta SQL para actualizar el historial médico
+        cursor.execute("""
+            UPDATE historial_medico SET fecha_diagnostico = %s, probabilidad = %s WHERE historial_id = %s""", (fecha_diagnostico, probabilidad, historial_id))
+
+        # Confirmar los cambios en la base de datos
+        conn.commit()
+
+        print("Historial médico actualizado exitosamente.")
+
+    except psycopg2.Error as e:
+        print("Error al actualizar el historial médico:", e)
+
+def eliminar_historial_medico(historial_id):
+    try:
+        # Ejecutar la consulta SQL para eliminar el historial médico
+        cursor.execute("""
+            DELETE FROM historial_medico WHERE historial_id = %s
+        """, (historial_id,))
+
+        # Confirmar los cambios en la base de datos
+        conn.commit()
+
+        print("Historial médico eliminado exitosamente.")
+
+    except psycopg2.Error as e:
+        print("Error al eliminar el historial médico:", e)
 
 def calcular_probabilidad(enfermedad, sintomas_seleccionados, signos_seleccionados):
     # Obtener signos y síntomas asociados a esta enfermedad desde la base de datos

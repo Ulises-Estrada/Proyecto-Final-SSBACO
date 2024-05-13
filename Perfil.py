@@ -14,7 +14,7 @@ def cerrar_sesion():
    import VentanaBienvenida
 
 def registrarUsuario():
-    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora':
+    if rolUsuario[0] == 'Administrador':
         # Solo los administradores pueden registrar usuarios
         import registrarUsuarios
     else:
@@ -22,7 +22,7 @@ def registrarUsuario():
         messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
 
 def editar_perfil():
-    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora':
+    if rolUsuario[0] == 'Administrador':
         # Solo los administradores pueden editar perfiles de usuario
         import actualizarUsuario
     else:
@@ -30,7 +30,7 @@ def editar_perfil():
         messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
 
 def eliminar_perfil():
-    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora':
+    if rolUsuario[0] == 'Administrador':
         # Solo los administradores pueden eliminar perfiles
         import eliminarUsuario
     else:
@@ -38,7 +38,7 @@ def eliminar_perfil():
         messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
 
 def registrar_pacientes():
-    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora' or rolUsuario[0] == 'secretario' or rolUsuario[0] == 'secretaria':
+    if rolUsuario[0] == 'Administrador' or rolUsuario[0] == 'Secretaria':
         # Solo el administrador y la secretaria pueden registrar pacientes
         import pacientesRegistro
     else:
@@ -46,7 +46,7 @@ def registrar_pacientes():
         messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
 
 def consultar_pacientes():
-    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora' or rolUsuario[0] == 'secretario' or rolUsuario[0] == 'secretaria':
+    if rolUsuario[0] == 'Administrador'or rolUsuario[0] == 'Secretaria':
         # Solo el administrador y la secretaria pueden consultar pacientes
         import consultarPaciente
     else:
@@ -54,7 +54,7 @@ def consultar_pacientes():
         messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
 
 def eliminar_pacientes():
-    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora':
+    if rolUsuario[0] == 'Administrador':
          # Solo el administrador puede eliminar pacientes
          import eliminarPaciente
     else:
@@ -62,7 +62,7 @@ def eliminar_pacientes():
         messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
 
 def actualizar_pacientes():
-    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora':
+    if rolUsuario[0] == 'Administrador':
          # Solo el administrador puede actualizar pacientes
          import actualizarPaciente
     else:
@@ -70,7 +70,7 @@ def actualizar_pacientes():
         messagebox.showerror("Error", "No tienes permiso para realizar esta acción")
 
 def registrar_enfermedad():
-    if rolUsuario[0] == 'administrador' or rolUsuario[0] == 'administradora' or rolUsuario[0] == 'medico' or rolUsuario[0] == 'medica':
+    if rolUsuario[0] == 'Administrador' or rolUsuario[0] == 'Medico':
         # Solo el administrador y el medico pueden registrar enfermedades
         import registrarEnfermedad
     else:
