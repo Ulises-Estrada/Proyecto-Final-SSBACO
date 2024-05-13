@@ -1,6 +1,6 @@
 import tkinter as tk
 from conexionDB import create_conn, create_cursor, psycopg2
-from datetime import datetime
+from tkinter import messagebox
 
 conn = create_conn()
 cursor = create_cursor(conn)
@@ -40,10 +40,11 @@ def buscar_paciente():
 def diagnosticar_enfermedades():
     # Obtener datos del diagnostico
     paciente_id = id_entry.get()
+    # hora_diagnostico = hora_entry.get() 
     fecha_diagnostico = fech_diag_entry.get()
-    hora_diagnostico = hora_entry.get() 
     presion_arterial = presion_entry.get()
     temperatura = temp_entry.get()
+    frecuencia_cardiaca = frec_card_entry.get()
 
     # Obtener signos y síntomas seleccionados
     sintomas_seleccionados = [sintomas_list.get(i) for i in sintomas_list.curselection()]
@@ -54,8 +55,6 @@ def diagnosticar_enfermedades():
 
     cursor.execute("SELECT id, nombre FROM enfermedades")
     enfermedades = cursor.fetchall()
-
-    cursor.execute()
 
     for enfermedad_id, nombre in enfermedades:
         # Calcular la probabilidad de esta enfermedad basada en signos y síntomas seleccionados
@@ -83,8 +82,9 @@ def diagnosticar_enfermedades():
     enfermedad_mas_probable, probabilidad_mas_alta = enfermedades_probabilidad_ordenadas[0]
 
     # Agregar un botón para crear el historial médico con los parámetros obtenidos
-    boton_crear_historial = tk.Button(resultado_window, text="Crear Historial", command=lambda: crear_historial_medico(paciente_id, fecha_diagnostico, enfermedad_mas_probable, probabilidad_mas_alta))
-    boton_crear_historial.grid(row=16, column=0, sticky="nsew", pady=(10, 0))
+    boton_crear_historial = tk.Button(resultado_window, text="Crear Historial", command=lambda: crear_historial_medico(paciente_id,fecha_diagnostico,presion_arterial,temperatura,frecuencia_cardiaca,enfermedad_mas_probable,probabilidad_mas_alta))
+    # boton_crear_historial.grid(row=16, column=0, sticky="nsew", pady=(10, 0))
+    boton_crear_historial.pack()
 
     # boton_leer_historial = tk.Button(resultado_window, text="Leer Historial", command=leer_historial_medico)
     # boton_leer_historial.grid(row=16, column=1, sticky="nsew", pady=(10, 0))
@@ -95,14 +95,13 @@ def diagnosticar_enfermedades():
     # boton_eliminar_historial = tk.Button(resultado_window, text="Eliminar Historial", command=lambda: eliminar_historial_medico(historial_id))
     # boton_eliminar_historial.grid(row=17, column=1, sticky="nsew", pady=(10, 0))
 
-
-def crear_historial_medico(paciente_id, fecha_diagnostico, enfermedad_mas_probable, probabilidad_mas_alta):
+def crear_historial_medico(paciente_id,fecha_diagnostico,presion_arterial,temperatura,frecuencia_cardiaca,enfermedad_mas_probable,probabilidad_mas_alta):
     try:
         # Ejecutar la consulta SQL para insertar un nuevo registro en Historial_Medico
         cursor.execute("""
-            INSERT INTO historial_medico (paciente_id, fecha_diagnostico, probabilidad, enfermedad)
-            VALUES (%s, %s, %s, %s)
-        """, (paciente_id, fecha_diagnostico, probabilidad_mas_alta, enfermedad_mas_probable))
+            INSERT INTO historial_medico (id_paciente, fecha_diagnostico, presion_arterial, temperatura, frecuencia_cardiaca, enfermedad, probabilidad)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+        """, (paciente_id,fecha_diagnostico,presion_arterial,temperatura,frecuencia_cardiaca,enfermedad_mas_probable,probabilidad_mas_alta))
 
         # Confirmar los cambios en la base de datos
         conn.commit()
@@ -111,6 +110,7 @@ def crear_historial_medico(paciente_id, fecha_diagnostico, enfermedad_mas_probab
 
     except psycopg2.Error as e:
         print("Error al crear el historial médico:", e)
+
 
 def leer_historial_medico(paciente_id):
     try:
@@ -284,8 +284,8 @@ temp = tk.Label(frame_izquierdo, text="Temperatura",font=(15)).grid(row = 14, co
 temp_entry = tk.Entry(frame_izquierdo,width=30,font=(15))
 temp_entry.grid(row = 14, column = 1,sticky="W",pady=(10, 10))
 
-temp = tk.Label(frame_izquierdo, text="Frecuencia cardiaca",font=(15)).grid(row = 15, column = 0,sticky="nsew")
-temp_entry = tk.Entry(frame_izquierdo,width=30,font=(15))
-temp_entry.grid(row = 15, column = 1,sticky="W",pady=(10, 10))
+frec_card = tk.Label(frame_izquierdo, text="Frecuencia cardiaca",font=(15)).grid(row = 15, column = 0,sticky="nsew")
+frec_card_entry = tk.Entry(frame_izquierdo,width=30,font=(15))
+frec_card_entry.grid(row = 15, column = 1,sticky="W",pady=(10, 10))
 
 root.mainloop()
