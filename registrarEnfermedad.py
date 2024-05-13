@@ -1,10 +1,14 @@
 from conexionDB import create_conn, create_cursor
 from PIL import Image, ImageTk
 import tkinter as tk
+import tkinter.messagebox as messagebox
+
 
 conn = create_conn()
 cursor = create_cursor(conn)
 
+def validar_texto(texto):
+    return texto.isalpha()
 
 def on_select(event):
     if signo_list.curselection():
@@ -23,8 +27,23 @@ def on_selectSintomas(event):
         sintomas_entry.insert(tk.END, ', '.join(selected))
         sintomas_entry.config(state='disabled')
 
+def validaciones():
+    nombre = nombre_entry.get()
+    descripcion = descripcion_entry.get("1.0", tk.END).strip()
+    pruebas = pruebas_entry.get("1.0", tk.END).strip()
+    tratamientos = tratamientos_entry.get("1.0", tk.END).strip()
+    pruebaPost = pruebaPost_entry.get("1.0", tk.END).strip()
+
+    # Validación de nombre, descripción, pruebas, tratamientos y pruebaPost: solo deben contener texto
+    if not all(validar_texto(text) for text in [nombre, descripcion, pruebas, tratamientos, pruebaPost]):
+        messagebox.showerror("Error", "Los campos deben contener solo texto.")
+        return False
+
+    return True
 
 def registrar_enfermedad():
+    if not validaciones():
+        return
     nombre = nombre_entry.get()
     descripcion = descripcion_entry.get("1.0", tk.END).strip()
     pruebas = pruebas_entry.get("1.0", tk.END).strip()
@@ -61,8 +80,7 @@ root = tk.Tk()
 root.title("Registro-Enfermedad")
 root.geometry("500x950")
 
-bienvenida = tk.Label(root, text="Registro de Enfermedad", font=(12, '20')).grid(row=0, column=0, columnspan=4,
-                                                                                 pady=(10, 10))
+bienvenida = tk.Label(root, text="Registro de Enfermedad", font=(12, '20')).grid(row=0, column=0, columnspan=4,pady=(10, 10))
 
 info = tk.Label(root, text="Información", font=(12, '15')).grid(row=1, column=0, sticky="nsew")
 
