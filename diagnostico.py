@@ -1,6 +1,7 @@
 import tkinter as tk
 from conexionDB import create_conn, create_cursor, psycopg2
 from tkinter import messagebox
+import re
 
 conn = create_conn()
 cursor = create_cursor(conn)
@@ -37,14 +38,20 @@ def buscar_paciente():
     except (Exception, psycopg2.DatabaseError) as error:
         print("Error al buscar al paciente:", error)
 
+def validar_fecha(fecha):
+    return bool(re.match(r'^\d{4}-\d{2}-\d{2}$', fecha))
+
 def diagnosticar_enfermedades():
     # Obtener datos del diagnostico
     paciente_id = id_entry.get()
-    # hora_diagnostico = hora_entry.get() 
     fecha_diagnostico = fech_diag_entry.get()
     presion_arterial = presion_entry.get()
     temperatura = temp_entry.get()
     frecuencia_cardiaca = frec_card_entry.get()
+
+    if not validar_fecha(fecha_diagnostico):
+        messagebox.showerror("Error", "La fecha debe estar en formato 'YYYY-MM-DD'.")
+        return
 
     # Obtener signos y síntomas seleccionados
     sintomas_seleccionados = [sintomas_list.get(i) for i in sintomas_list.curselection()]
@@ -67,7 +74,7 @@ def diagnosticar_enfermedades():
     # Crear una nueva ventana para mostrar el resultado
     resultado_window = tk.Toplevel()
     resultado_window.title("Resultado del Diagnóstico")
-    resultado_window.geometry("195x165")
+    resultado_window.geometry("295x265")
 
     # Crear una lista para mostrar el resultado
     lista_resultado = tk.Listbox(resultado_window)
@@ -100,7 +107,7 @@ def crear_historial_medico(paciente_id,fecha_diagnostico,presion_arterial,temper
         # Ejecutar la consulta SQL para insertar un nuevo registro en Historial_Medico
         cursor.execute("""
             INSERT INTO historial_medico (id_paciente, fecha_diagnostico, presion_arterial, temperatura, frecuencia_cardiaca, enfermedad, probabilidad)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
         """, (paciente_id,fecha_diagnostico,presion_arterial,temperatura,frecuencia_cardiaca,enfermedad_mas_probable,probabilidad_mas_alta))
 
         # Confirmar los cambios en la base de datos
@@ -266,11 +273,7 @@ boton_buscar = tk.Button(frame_izquierdo,text="Buscar con ID", command=buscar_pa
 
 info = tk.Label(frame_izquierdo, text="Datos",font=(12,'15')).grid(row = 9, column = 0, sticky="nsew")
 
-hora = tk.Label(frame_izquierdo, text="Hora",font=(15)).grid(row = 10, column = 0,sticky="nsew")
-hora_entry = tk.Entry(frame_izquierdo,width=30,font=(15))
-hora_entry.grid(row = 10, column = 1,sticky="W",pady=(10, 10))
-
-fech_diag = tk.Label(frame_izquierdo, text="Fecha consulta",font=(15)).grid(row = 11, column = 0,sticky="nsew")
+fech_diag = tk.Label(frame_izquierdo, text="Fecha y hora de consulta",font=(15)).grid(row = 11, column = 0,sticky="nsew")
 fech_diag_entry = tk.Entry(frame_izquierdo,width=30,font=(15))
 fech_diag_entry.grid(row = 11, column = 1,sticky="W",pady=(10, 10))
 
