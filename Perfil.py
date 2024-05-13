@@ -157,7 +157,6 @@ icon_paciente.grid(row=9, column=0)  # Usa grid en lugar de pack
 enfermedades_label = tk.Label(frame_info, text="Enfermedades",font=(12,'15'))
 enfermedades_label.grid(row=9, column=1,sticky="w")
 
-
 # Enfermedad
 boton_registrar_enefermedad = tk.Button(frame_info, text=" Registrar ↵ ", command=registrar_enfermedad, width=10,relief="groove")
 boton_registrar_enefermedad.grid(row=10,column=1)
