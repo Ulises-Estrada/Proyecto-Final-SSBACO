@@ -1,9 +1,14 @@
 from conexionDB import create_conn, create_cursor
 from PIL import Image, ImageTk
 import tkinter as tk
+import re
 
 conn = create_conn()
 cursor = create_cursor(conn)
+
+def validate_input(text):
+    # Utilizamos una expresión regular para verificar si el texto contiene solo letras
+    return bool(re.match("^[A-Za-z]+$", text))
 
 def on_select(event):
     if signo_list.curselection():
