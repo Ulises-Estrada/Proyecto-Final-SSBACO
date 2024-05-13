@@ -9,7 +9,7 @@ cursor = create_cursor(conn)
 def volver():
     import Perfil
     root.destroy()
-
+    
 def cargar_enfermedades():
     cursor.execute("SELECT id, nombre, descripcion, pruebas_lab, tratamientos, pruebas_mortem FROM enfermedades")
     return cursor.fetchall()

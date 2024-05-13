@@ -31,25 +31,22 @@ def eliminar_sintoma(combobox):
     except (Exception, psycopg2.Error) as error:
         messagebox.showerror("Error", f"No se pudo eliminar el síntoma: {error}")
 
-def crear_ventana():
-    ventana = tk.Tk()
-    ventana.title("Eliminar Síntoma")
 
-    frame = tk.Frame(ventana)
-    frame.pack()
+ventana = tk.Tk()
+ventana.title("Eliminar Síntoma")
+frame = tk.Frame(ventana)
+frame.pack()
 
-    label = tk.Label(frame, text="Seleccione un síntoma:")
-    label.grid(row=0, column=0, padx=5, pady=5)
+label = tk.Label(frame, text="Seleccione un síntoma:")
+label.grid(row=0, column=0, padx=5, pady=5)
 
-    sintomas_combobox = ttk.Combobox(frame, width=50, state="readonly")
-    sintomas_combobox.grid(row=0, column=1, padx=5, pady=5)
+sintomas_combobox = ttk.Combobox(frame, width=50, state="readonly")
+sintomas_combobox.grid(row=0, column=1, padx=5, pady=5)
 
-    cargar_sintomas(sintomas_combobox)
+cargar_sintomas(sintomas_combobox)
 
-    eliminar_button = tk.Button(frame, text="Eliminar Síntoma", command=lambda: eliminar_sintoma(sintomas_combobox))
-    eliminar_button.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
+eliminar_button = tk.Button(frame, text="Eliminar Síntoma", command=lambda: eliminar_sintoma(sintomas_combobox))
+eliminar_button.grid(row=1, column=0, columnspan=2, padx=5, pady=5)
 
-    ventana.mainloop()
+ventana.mainloop()
 
-if __name__ == "__main__":
-    crear_ventana()

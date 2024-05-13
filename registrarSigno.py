@@ -13,8 +13,6 @@ def validate_input(text):
 
 def register():
     nombre = nombre_entry.get().strip()
-
-    # Verificamos si el campo de nombre está vacío o no contiene solo letras
     if not nombre or not validate_input(nombre):
         messagebox.showerror("Error", "Por favor ingresa un nombre válido.")
         return
